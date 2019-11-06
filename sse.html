@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>Getting server updates</h1>
+<div id="result"></div>
+
+<script>
+
+    var eSource;  //define my global eventSource Object
+    if (!!window.EventSource)  //Check for Browser feature compatibiliity
+     {
+      var eSource= new EventSource('http://localhost:8080/stock/transaction');  //instantiate the Event source
+    } else {
+      alert("You're browser does not support EventSource needed for this page ");
+      // Fallback method perhaps you can use old-school XHR polling
+    }
+    //Now bind various Events , Message, and Error to this event
+    eSource.addEventListener('open', function(e) {
+      console.log("Connection was opened.")
+    }, false);
+
+    eSource.addEventListener('message', function(e) {
+      console.log(e.data);
+    }, false);
+
+    eSource.addEventListener('eone', function(e) {
+        document.getElementById("result").innerHTML += e.id + "-" + e.data + "<br>";
+      console.log(e.data);
+    }, false);
+
+
+    eSource.addEventListener('error', function(e) {
+      if (e.readyState == EventSource.CLOSED) {
+        console.log("Connection was closed. ");
+      }
+    }, false);
+
+
+</script>
+
+</body>
+</html>
